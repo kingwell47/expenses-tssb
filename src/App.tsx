@@ -7,6 +7,8 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import LoginPage from "./pages/LoginPage";
+import DashboardPage from "./pages/DashboardPage";
 
 /**
  * AuthListener handles:
@@ -65,11 +67,31 @@ function PublicRoute({ children }: { children: React.JSX.Element }) {
 
 function App() {
   return (
-    <>
+    <Router>
       {/* Mount the AuthListener at the root so it runs on every route */}
       <AuthListener />
       <h1>Hello World</h1>
-    </>
+      <Routes>
+        {/* Public Routes */}
+        <Route
+          path="/login"
+          element={
+            <PublicRoute>
+              <LoginPage />
+            </PublicRoute>
+          }
+        />
+        {/* Private Routes */}
+        <Route
+          path="/"
+          element={
+            <PrivateRoute>
+              <DashboardPage />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
