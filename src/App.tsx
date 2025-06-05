@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import { supabase } from "./services/supabaseClient";
 import { useAuthStore } from "./store/authStore";
 import {
@@ -45,6 +45,22 @@ function AuthListener() {
   }, [fetchUser]);
 
   return null;
+}
+
+/**
+ * PrivateRoute: redirects to /login if there's no authenticated user.
+ */
+function PrivateRoute({ children }: { children: React.JSX.Element }) {
+  const user = useAuthStore((state) => state.user);
+  return user ? children : <Navigate to="/login" replace />;
+}
+
+/**
+ * PublicRoute: redirects to / if user is already authenticated.
+ */
+function PublicRoute({ children }: { children: React.JSX.Element }) {
+  const user = useAuthStore((state) => state.user);
+  return user ? <Navigate to="/" replace /> : children;
 }
 
 function App() {
