@@ -1,3 +1,5 @@
+import type { User as SupabaseUser } from "@supabase/supabase-js";
+
 export interface Category {
   id: string;
   name: string;
@@ -14,8 +16,15 @@ export interface Expense {
   created_at: string;
 }
 
-export interface User {
+export interface User extends SupabaseUser {
+  user_metadata: {
+    displayName?: string; // optional, since not every sign-in flow might set it
+    [key: string]: unknown; // allow for any other metadata fields Supabase might send
+  };
+}
+
+export interface AppUser {
   id: string;
   email: string;
-  // add extra fields if needed
+  displayName: string; // make this required if you always collect it at signup
 }
