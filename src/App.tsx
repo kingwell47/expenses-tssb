@@ -9,6 +9,7 @@ import {
 } from "react-router-dom";
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
+import NavBar from "./components/Layout/NavBar";
 
 /**
  * AuthListener handles:
@@ -70,7 +71,7 @@ function App() {
     <Router>
       {/* Mount the AuthListener at the root so it runs on every route */}
       <AuthListener />
-      <h1>Hello World</h1>
+      <NavBar />
       <Routes>
         {/* Public Routes */}
         <Route
