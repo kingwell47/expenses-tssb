@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { supabase } from "./services/supabaseClient";
-import { useAuthStore } from "./store/authStore";
+import { useAuthStore } from "./stores/authStore";
 import {
   BrowserRouter as Router,
   Routes,

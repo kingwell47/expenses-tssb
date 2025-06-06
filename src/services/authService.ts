@@ -86,9 +86,12 @@ export async function getCurrentUser(): Promise<AppUser | null> {
     error,
   } = await supabase.auth.getUser();
 
-  if (error) {
-    throw new Error(`Error fetching user: ${error.message}`);
+  // If there’s no session, Supabase may set “Auth session missing!”.
+  // Treat that as “no user” rather than an exception.
+  if (error && error.message !== "Auth session missing!") {
+    throw new Error(error.message);
   }
+
   if (!user) {
     return null;
   }
