@@ -25,12 +25,19 @@ const NavBar: React.FC = () => {
         <Link to="/">ExpenseTracker</Link>
       </div>
       {user && (
-        <div className="navbar-end gap-4">
-          <p>Welcome {user.displayName}</p>
-          <button onClick={handleLogout} className="btn btn-accent">
-            Logout
-          </button>
-        </div>
+        <>
+          <div className="navbar-center">
+            <Link className="link" to="/expenses">
+              Expenses
+            </Link>
+          </div>
+          <div className="navbar-end gap-4">
+            <p>Welcome {user.displayName}</p>
+            <button onClick={handleLogout} className="btn btn-accent">
+              Logout
+            </button>
+          </div>
+        </>
       )}
     </nav>
   );

@@ -10,15 +10,30 @@ import {
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import NavBar from "./components/Layout/NavBar";
+import ExpensesPage from "./pages/ExpensesPage";
+
+import { useSupabaseSession } from "./hooks/useSupabaseSession";
 
 /**
- * AuthListener handles:
- * 1. Initial fetch of the current user on mount
- * 2. Listening for any auth state changes (sign-in, sign-out)
- *    and mapping Supabase User → AppUser before storing.
+ * PrivateRoute: redirects to /login if there's no authenticated user.
  */
-function AuthListener() {
-  const fetchUser = useAuthStore((state) => state.fetchUser);
+function PrivateRoute({ children }: { children: React.JSX.Element }) {
+  const { session, loading } = useSupabaseSession();
+  if (loading) return null; // or a spinner
+  return session ? children : <Navigate to="/login" replace />;
+}
+
+/**
+ * PublicRoute: redirects to / if user is already authenticated.
+ */
+function PublicRoute({ children }: { children: React.JSX.Element }) {
+  const { session, loading } = useSupabaseSession();
+  if (loading) return null;
+  return session ? <Navigate to="/" replace /> : children;
+}
+
+function App() {
+  const { loading, fetchUser } = useAuthStore();
 
   useEffect(() => {
     // 1) On mount, attempt to load any existing session
@@ -47,30 +62,17 @@ function AuthListener() {
     };
   }, [fetchUser]);
 
-  return null;
-}
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <span className="loading loading-bars loading-xl"></span>
+      </div>
+    );
+  }
 
-/**
- * PrivateRoute: redirects to /login if there's no authenticated user.
- */
-function PrivateRoute({ children }: { children: React.JSX.Element }) {
-  const user = useAuthStore((state) => state.user);
-  return user ? children : <Navigate to="/login" replace />;
-}
-
-/**
- * PublicRoute: redirects to / if user is already authenticated.
- */
-function PublicRoute({ children }: { children: React.JSX.Element }) {
-  const user = useAuthStore((state) => state.user);
-  return user ? <Navigate to="/" replace /> : children;
-}
-
-function App() {
   return (
     <Router>
       {/* Mount the AuthListener at the root so it runs on every route */}
-      <AuthListener />
       <NavBar />
       <Routes>
         {/* Public Routes */}
@@ -89,6 +91,25 @@ function App() {
             <PrivateRoute>
               <DashboardPage />
             </PrivateRoute>
+          }
+        />
+        <Route
+          path="/expenses"
+          element={
+            <PrivateRoute>
+              <ExpensesPage />
+            </PrivateRoute>
+          }
+        />
+        {/* Fallback */}
+        <Route
+          path="*"
+          element={
+            useAuthStore.getState().user ? (
+              <Navigate to="/" replace />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
       </Routes>
