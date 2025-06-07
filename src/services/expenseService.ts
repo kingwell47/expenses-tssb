@@ -10,7 +10,9 @@ export async function fetchExpenses(): Promise<Expense[]> {
   return data || [];
 }
 
-export async function addExpense(expense: Omit<Expense, "id" | "created_at">) {
+export async function addExpense(
+  expense: Omit<Expense, "id" | "created_at" | "user_id">
+) {
   const { data, error } = await supabase
     .from("expenses")
     .insert({ ...expense })

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import type { FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 
@@ -13,7 +12,7 @@ const SignUpForm: React.FC = () => {
   const [password, setPassword] = useState("");
   const [localError, setLocalError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     // Clear local error
     setLocalError(null);

@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../stores/authStore";
 
+// TODO: Forgot password function
+
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const { signIn, loading, error } = useAuthStore();
