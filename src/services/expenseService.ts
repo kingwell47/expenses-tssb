@@ -2,12 +2,30 @@ import { supabase } from "./supabaseClient";
 import type { Expense } from "../types";
 
 export async function fetchExpenses(): Promise<Expense[]> {
+  const {
+    data: { session },
+    error: sessionError,
+  } = await supabase.auth.getSession();
+
+  if (sessionError) {
+    console.error("Error getting session:", sessionError);
+    throw new Error(sessionError.message);
+  }
+  if (!session) {
+    throw new Error("Not authenticated");
+  }
+
+  const userId = session.user.id;
   const { data, error } = await supabase
     .from("expenses")
     .select("*")
+    .eq("user_id", userId)
     .order("spent_at", { ascending: false });
-  if (error) throw error;
-  return data || [];
+  if (error) {
+    console.error("Error fetching expenses:", error);
+    throw new Error(error.message);
+  }
+  return data ?? [];
 }
 
 export async function addExpense(

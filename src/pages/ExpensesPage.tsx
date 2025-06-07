@@ -3,7 +3,7 @@ import { useExpenseStore } from "../stores/expenseStore";
 import ExpenseList from "../components/Expenses/ExpenseList";
 
 const ExpensesPage: React.FC = () => {
-  const { loadExpenses, expenses, loading, error } = useExpenseStore();
+  const { loadExpenses, loading, error } = useExpenseStore();
 
   useEffect(() => {
     loadExpenses();
@@ -12,10 +12,8 @@ const ExpensesPage: React.FC = () => {
   return (
     <div>
       <h1>Expenses</h1>
-
-      {loading && <p>Loading expenses...</p>}
+      {loading && <div>Loading expenses…</div>}
       {error && <p style={{ color: "red" }}>{error}</p>}
-
       {!loading && !error && <ExpenseList />}
     </div>
   );
