@@ -8,15 +8,17 @@ import EditTransactionForm from "../components/Transactions/EditTransactionForm"
 import { CATEGORIES } from "../constants/categories";
 
 const TransactionsPage: React.FC = () => {
+  // Zustand states
   const { transactions, loading, error, load } = useTransactionStore();
 
+  // Controls
   // default to current year‐month (e.g. "2025-06")
   const [month, setMonth] = useState<string>(() => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
   });
-
   const [categoryFilter, setCategoryFilter] = useState<string>(""); // '' = All
+  const [searchTerm, setSearchTerm] = useState<string>(""); // for note search
 
   // Show/Hide add form:
   const [showAdd, setShowAdd] = useState(false);
@@ -34,10 +36,14 @@ const TransactionsPage: React.FC = () => {
     (tx): tx is NonNullable<typeof tx> => tx != null
   );
 
-  // Derive the filtered list
-  const filtered = safeTransactions.filter(
-    (tx) => categoryFilter === "" || tx.category === categoryFilter
-  );
+  // Client-side filtering by category AND searchTerm in note
+  const filtered = safeTransactions
+    .filter((tx) => categoryFilter === "" || tx.category === categoryFilter)
+    .filter(
+      (tx) =>
+        searchTerm === "" ||
+        (tx.note?.toLowerCase().includes(searchTerm.toLowerCase()) ?? false)
+    );
 
   // Handlers
   const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -45,7 +51,10 @@ const TransactionsPage: React.FC = () => {
   };
   const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) =>
     setCategoryFilter(e.target.value);
+  const handleSearchChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setSearchTerm(e.target.value);
 
+  // Show add transaction
   const handleAddClick = () => setShowAdd(true);
   const handleAddCancel = () => setShowAdd(false);
   const handleAddSuccess = async () => {
@@ -53,13 +62,13 @@ const TransactionsPage: React.FC = () => {
     await load(month);
   };
 
+  // Show Editing form
   const handleEditClick = (tx: Transaction) => {
     setEditingTx(tx);
   };
   const handleEditCancel = () => setEditingTx(null);
   const handleEditSaved = async () => {
     setEditingTx(null);
-    // store.update already updated the list, but if you want fresh:
     await load(month);
   };
 
@@ -93,8 +102,21 @@ const TransactionsPage: React.FC = () => {
             </option>
           ))}
         </select>
+        {/* Search box for notes */}
+        <label htmlFor="search" style={{ marginLeft: 16 }}>
+          Search Notes:
+        </label>{" "}
+        <input
+          id="search"
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="input"
+        />
       </div>
 
+      {/* Loading / error / empty state */}
       {loading && <div>Loading transactions…</div>}
       {error && <div style={{ color: "red" }}>{error}</div>}
       {!loading && transactions.length === 0 && (

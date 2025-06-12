@@ -13,8 +13,10 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   onSuccess,
   onCancel,
 }) => {
+  // Zustand state
   const { add, loading, error } = useTransactionStore();
 
+  // Local states
   const [type, setType] = useState<"income" | "expense">("expense");
   const [amount, setAmount] = useState<number>(0);
   const [category, setCategory] = useState<CategoryName>("Food");
