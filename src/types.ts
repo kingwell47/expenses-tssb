@@ -28,3 +28,17 @@ export interface AppUser {
   email: string;
   displayName: string; // make this required if you always collect it at signup
 }
+
+export interface Transaction {
+  id: string;
+  user_id: string;
+  type: "income" | "expense"; // enum: income or expense
+  amount: number; // stored as numeric(10,2)
+  category: string | null; // free-text category
+  occurred_at: string; // ISO timestamp of when it happened
+  note: string | null; // optional notes
+  created_at: string; // ISO timestamp of creation
+}
+
+/** Payload for creating a new transaction */
+export type NewTransaction = Omit<Transaction, "id" | "user_id" | "created_at">;
