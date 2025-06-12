@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import type { MouseEvent } from "react";
 import type { Transaction } from "../../types";
 import { useTransactionStore } from "../../stores/transactionStore";

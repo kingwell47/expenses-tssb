@@ -1,7 +1,7 @@
-// src/components/Transactions/AddTransactionForm.tsx
-
 import React, { useState } from "react";
 import { useTransactionStore } from "../../stores/transactionStore";
+import { CATEGORIES } from "../../constants/categories";
+import type { CategoryName } from "../../constants/categories";
 import type { NewTransaction } from "../../types";
 
 type AddTransactionFormProps = {
@@ -100,13 +100,18 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
       <div>
         <label htmlFor="tx-category">Category</label>
         <br />
-        <input
+        <select
           id="tx-category"
-          type="text"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="input"
-        />
+          onChange={(e) => setCategory(e.target.value as CategoryName)}
+          className="select"
+        >
+          {CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>

@@ -2,6 +2,8 @@
 
 import React, { useState } from "react";
 import { useTransactionStore } from "../../stores/transactionStore";
+import { CATEGORIES } from "../../constants/categories";
+import type { CategoryName } from "../../constants/categories";
 import type { Transaction } from "../../types";
 
 type EditTransactionFormProps = {
@@ -93,13 +95,18 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
       <div>
         <label htmlFor="edit-tx-category">Category</label>
         <br />
-        <input
+        <select
           id="edit-tx-category"
-          type="text"
           value={category}
-          onChange={(e) => setCategory(e.target.value)}
-          className="input"
-        />
+          onChange={(e) => setCategory(e.target.value as CategoryName)}
+          className="select"
+        >
+          {CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
 
       <div>
