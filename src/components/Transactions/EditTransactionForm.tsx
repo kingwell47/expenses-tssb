@@ -69,6 +69,7 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           value={type}
           onChange={(e) => setType(e.target.value as "income" | "expense")}
           required
+          className="select"
         >
           <option value="expense">Expense</option>
           <option value="income">Income</option>
@@ -85,6 +86,7 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           onChange={(e) => setAmount(parseFloat(e.target.value))}
           required
           step="0.01"
+          className="input"
         />
       </div>
 
@@ -96,6 +98,7 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           type="text"
           value={category}
           onChange={(e) => setCategory(e.target.value)}
+          className="input"
         />
       </div>
 
@@ -108,6 +111,7 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           value={occurredAt}
           onChange={(e) => setOccurredAt(e.target.value)}
           required
+          className="input"
         />
       </div>
 
@@ -119,14 +123,20 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           type="text"
           value={note}
           onChange={(e) => setNote(e.target.value)}
+          className="input"
         />
       </div>
 
-      <button type="submit" disabled={loading}>
+      <button type="submit" disabled={loading} className="btn">
         {loading ? "Saving…" : "Save Changes"}
       </button>
       {onCancel && (
-        <button type="button" onClick={onCancel} disabled={loading}>
+        <button
+          type="button"
+          onClick={onCancel}
+          disabled={loading}
+          className="btn"
+        >
           Cancel
         </button>
       )}

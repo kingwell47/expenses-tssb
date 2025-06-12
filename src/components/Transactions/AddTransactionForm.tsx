@@ -4,7 +4,15 @@ import React, { useState } from "react";
 import { useTransactionStore } from "../../stores/transactionStore";
 import type { NewTransaction } from "../../types";
 
-const AddTransactionForm: React.FC = () => {
+type AddTransactionFormProps = {
+  onSuccess: () => void;
+  onCancel: () => void;
+};
+
+const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
+  onSuccess,
+  onCancel,
+}) => {
   const { add, loading, error } = useTransactionStore();
 
   const [type, setType] = useState<"income" | "expense">("expense");
@@ -39,6 +47,7 @@ const AddTransactionForm: React.FC = () => {
 
     try {
       await add(tx);
+      onSuccess();
       // reset form
       setType("expense");
       setAmount(0);
@@ -127,6 +136,14 @@ const AddTransactionForm: React.FC = () => {
 
       <button type="submit" disabled={loading} className="btn btn-primary">
         {loading ? "Adding…" : "Add Transaction"}
+      </button>
+      <button
+        type="button"
+        onClick={onCancel}
+        disabled={loading}
+        className="btn btn-error"
+      >
+        Cancel
       </button>
     </form>
   );

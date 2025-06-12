@@ -1,13 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import type { MouseEvent } from "react";
 import type { Transaction } from "../../types";
 import { useTransactionStore } from "../../stores/transactionStore";
 
 type TransactionItemProps = {
   transaction: Transaction;
+  onEdit?: () => void;
 };
 
-const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
+const TransactionItem: React.FC<TransactionItemProps> = ({
+  transaction,
+  onEdit,
+}) => {
   const { remove } = useTransactionStore();
 
   const handleDelete = (e: MouseEvent<HTMLButtonElement>) => {
@@ -18,7 +22,7 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
   };
 
   return (
-    <li className="outline">
+    <div className="outline">
       <div>
         <strong>{transaction.type.toUpperCase()}</strong> —{" "}
         {transaction.amount.toFixed(2)}
@@ -29,15 +33,12 @@ const TransactionItem: React.FC<TransactionItemProps> = ({ transaction }) => {
       <button onClick={handleDelete} className="btn">
         Delete
       </button>
-      <button
-        className="btn"
-        onClick={() => {
-          /* TODO: open edit form/modal and call update */
-        }}
-      >
-        Edit
-      </button>
-    </li>
+      {onEdit && (
+        <button onClick={onEdit} className="btn">
+          Edit
+        </button>
+      )}
+    </div>
   );
 };
 
