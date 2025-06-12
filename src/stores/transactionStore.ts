@@ -136,6 +136,14 @@ export const useTransactionStore = create<TransactionSlice>()(
     })),
     {
       name: "transaction-store", // localStorage key
+      version: 2, // bump this whenever shape changes
+      migrate: (state, ver) => {
+        if (ver !== 2) {
+          // drop old state
+          return { transactions: [], loading: false, error: null };
+        }
+        return state;
+      },
     }
   )
 );
