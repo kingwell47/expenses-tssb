@@ -27,8 +27,8 @@ const NavBar: React.FC = () => {
       {user && (
         <>
           <div className="navbar-center">
-            <Link className="link" to="/expenses">
-              Expenses
+            <Link className="link" to="/transactions">
+              Transactions
             </Link>
           </div>
           <div className="navbar-end gap-4">

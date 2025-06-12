@@ -1,5 +1,5 @@
 import { supabase } from "./supabaseClient";
-import type { Session } from "@supabase/supabase-js";
+// import type { Session } from "@supabase/supabase-js";
 import type { AppUser } from "../types";
 import { toAppUser } from "../utils/toAppUser";
 
@@ -103,14 +103,14 @@ export async function getCurrentUser(): Promise<AppUser | null> {
  * @returns The Session object, or null if not signed in
  * @throws Error if the request to getSession fails
  */
-export async function getCurrentSession(): Promise<Session | null> {
-  const {
-    data: { session },
-    error,
-  } = await supabase.auth.getSession();
+// export async function getCurrentSession(): Promise<Session | null> {
+//   const {
+//     data: { session },
+//     error,
+//   } = await supabase.auth.getSession();
 
-  if (error) {
-    throw new Error(`Error fetching session: ${error.message}`);
-  }
-  return session;
-}
+//   if (error) {
+//     throw new Error(`Error fetching session: ${error.message}`);
+//   }
+//   return session;
+// }

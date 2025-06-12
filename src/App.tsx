@@ -10,9 +10,9 @@ import {
 import LoginPage from "./pages/LoginPage";
 import DashboardPage from "./pages/DashboardPage";
 import NavBar from "./components/Layout/NavBar";
-import ExpensesPage from "./pages/ExpensesPage";
 
 import { useSupabaseSession } from "./hooks/useSupabaseSession";
+import TransactionsPage from "./pages/TransactionsPage";
 
 /**
  * PrivateRoute: redirects to /login if there's no authenticated user.
@@ -72,7 +72,6 @@ function App() {
 
   return (
     <Router>
-      {/* Mount the AuthListener at the root so it runs on every route */}
       <NavBar />
       <Routes>
         {/* Public Routes */}
@@ -94,10 +93,10 @@ function App() {
           }
         />
         <Route
-          path="/expenses"
+          path="/transactions"
           element={
             <PrivateRoute>
-              <ExpensesPage />
+              <TransactionsPage />
             </PrivateRoute>
           }
         />
