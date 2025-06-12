@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { useTransactionStore } from "../stores/transactionStore";
 import TransactionItem from "../components/Transactions/TransactionItem";
 import AddTransactionForm from "../components/Transactions/AddTransactionForm";
 import type { Transaction } from "../types";
 import EditTransactionForm from "../components/Transactions/EditTransactionForm";
+import { CATEGORIES } from "../constants/categories";
 
 const TransactionsPage: React.FC = () => {
   const { transactions, loading, error, load } = useTransactionStore();
@@ -14,24 +16,35 @@ const TransactionsPage: React.FC = () => {
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
   });
 
+  const [categoryFilter, setCategoryFilter] = useState<string>(""); // '' = All
+
   // Show/Hide add form:
   const [showAdd, setShowAdd] = useState(false);
 
   // Currently editing transaction (if any)
   const [editingTx, setEditingTx] = useState<Transaction | null>(null);
 
+  // Load whenever month changes
   useEffect(() => {
     load(month);
   }, [load, month]);
-
-  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMonth(e.target.value);
-  };
 
   // filter out any nulls just in case
   const safeTransactions = transactions.filter(
     (tx): tx is NonNullable<typeof tx> => tx != null
   );
+
+  // Derive the filtered list
+  const filtered = safeTransactions.filter(
+    (tx) => categoryFilter === "" || tx.category === categoryFilter
+  );
+
+  // Handlers
+  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setMonth(e.target.value);
+  };
+  const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) =>
+    setCategoryFilter(e.target.value);
 
   const handleAddClick = () => setShowAdd(true);
   const handleAddCancel = () => setShowAdd(false);
@@ -61,7 +74,25 @@ const TransactionsPage: React.FC = () => {
           type="month"
           value={month}
           onChange={handleMonthChange}
+          className="input"
         />
+        {/* Category filter */}
+        <label htmlFor="category-filter" style={{ marginLeft: 16 }}>
+          Category:
+        </label>{" "}
+        <select
+          id="category-filter"
+          value={categoryFilter}
+          onChange={handleCategoryChange}
+          className="select"
+        >
+          <option value="">All</option>
+          {CATEGORIES.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
       </div>
 
       {loading && <div>Loading transactions…</div>}
@@ -71,7 +102,7 @@ const TransactionsPage: React.FC = () => {
       )}
 
       <ul className="outline">
-        {safeTransactions.map((tx) => (
+        {filtered.map((tx) => (
           <li key={tx.id}>
             {editingTx?.id === tx.id ? (
               <EditTransactionForm

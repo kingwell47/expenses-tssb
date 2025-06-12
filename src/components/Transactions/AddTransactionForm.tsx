@@ -17,7 +17,7 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
 
   const [type, setType] = useState<"income" | "expense">("expense");
   const [amount, setAmount] = useState<number>(0);
-  const [category, setCategory] = useState<string>("");
+  const [category, setCategory] = useState<CategoryName>("Food");
   const [occurredAt, setOccurredAt] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
@@ -51,7 +51,7 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
       // reset form
       setType("expense");
       setAmount(0);
-      setCategory("");
+      setCategory("Food");
       setOccurredAt(new Date().toISOString().slice(0, 10));
       setNote("");
     } catch (err: unknown) {

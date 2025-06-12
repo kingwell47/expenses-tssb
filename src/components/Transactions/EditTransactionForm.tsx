@@ -21,7 +21,9 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
 
   const [type, setType] = useState<"income" | "expense">(transaction.type);
   const [amount, setAmount] = useState<number>(transaction.amount);
-  const [category, setCategory] = useState<string>(transaction.category ?? "");
+  const [category, setCategory] = useState<CategoryName>(
+    (transaction.category as CategoryName) || "Other"
+  );
   const [occurredAt, setOccurredAt] = useState<string>(
     transaction.occurred_at.slice(0, 10)
   );
