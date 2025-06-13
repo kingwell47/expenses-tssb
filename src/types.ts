@@ -42,3 +42,21 @@ export interface Transaction {
 
 /** Payload for creating a new transaction */
 export type NewTransaction = Omit<Transaction, "id" | "user_id" | "created_at">;
+
+// Type for KPI items
+export type KPI = {
+  label: string;
+  value: string | number;
+};
+
+// Data types for charts
+export type CategoryData = {
+  category: string;
+  amount: number;
+};
+
+export type TrendData = {
+  month: string;
+  spent: number;
+  income: number;
+};
