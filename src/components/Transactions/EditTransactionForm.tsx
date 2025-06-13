@@ -2,7 +2,10 @@
 
 import React, { useState } from "react";
 import { useTransactionStore } from "../../stores/transactionStore";
-import { CATEGORIES } from "../../constants/categories";
+import {
+  EXPENSE_CATEGORIES,
+  INCOME_CATEGORIES,
+} from "../../constants/categories";
 import type { CategoryName } from "../../constants/categories";
 import type { Transaction } from "../../types";
 
@@ -29,6 +32,10 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
   );
   const [note, setNote] = useState<string>(transaction.note ?? "");
   const [localError, setLocalError] = useState<string | null>(null);
+
+  // pick the right list
+  const availableCategories =
+    type === "expense" ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -103,7 +110,7 @@ const EditTransactionForm: React.FC<EditTransactionFormProps> = ({
           onChange={(e) => setCategory(e.target.value as CategoryName)}
           className="select"
         >
-          {CATEGORIES.map((cat) => (
+          {availableCategories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>

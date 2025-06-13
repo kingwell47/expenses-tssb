@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useTransactionStore } from "../../stores/transactionStore";
-import { CATEGORIES } from "../../constants/categories";
+import {
+  EXPENSE_CATEGORIES,
+  INCOME_CATEGORIES,
+} from "../../constants/categories";
 import type { CategoryName } from "../../constants/categories";
 import type { NewTransaction } from "../../types";
 
@@ -19,12 +22,16 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
   // Local states
   const [type, setType] = useState<"income" | "expense">("expense");
   const [amount, setAmount] = useState<number>(0);
-  const [category, setCategory] = useState<CategoryName>("Food");
+  const [category, setCategory] = useState<CategoryName>("Other");
   const [occurredAt, setOccurredAt] = useState<string>(
     new Date().toISOString().slice(0, 10)
   );
   const [note, setNote] = useState<string>("");
   const [localError, setLocalError] = useState<string | null>(null);
+
+  // pick the right list
+  const availableCategories =
+    type === "expense" ? EXPENSE_CATEGORIES : INCOME_CATEGORIES;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,7 +60,7 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
       // reset form
       setType("expense");
       setAmount(0);
-      setCategory("Food");
+      setCategory("Other");
       setOccurredAt(new Date().toISOString().slice(0, 10));
       setNote("");
     } catch (err: unknown) {
@@ -108,7 +115,7 @@ const AddTransactionForm: React.FC<AddTransactionFormProps> = ({
           onChange={(e) => setCategory(e.target.value as CategoryName)}
           className="select"
         >
-          {CATEGORIES.map((cat) => (
+          {availableCategories.map((cat) => (
             <option key={cat} value={cat}>
               {cat}
             </option>
