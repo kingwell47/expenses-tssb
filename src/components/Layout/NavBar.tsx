@@ -30,6 +30,9 @@ const NavBar: React.FC = () => {
             <Link className="link" to="/transactions">
               Transactions
             </Link>
+            <Link className="link" to="/analytics">
+              Analytics
+            </Link>
           </div>
           <div className="navbar-end gap-4">
             <p>Welcome {user.displayName}</p>

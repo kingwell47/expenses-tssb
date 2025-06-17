@@ -5,7 +5,7 @@ import TransactionItem from "../components/Transactions/TransactionItem";
 import AddTransactionForm from "../components/Transactions/AddTransactionForm";
 import type { Transaction } from "../types";
 import EditTransactionForm from "../components/Transactions/EditTransactionForm";
-import { CATEGORIES } from "../constants/categories";
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../constants/categories";
 
 const TransactionsPage: React.FC = () => {
   // Zustand states
@@ -17,6 +17,9 @@ const TransactionsPage: React.FC = () => {
     const d = new Date();
     return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
   });
+  const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">(
+    "all"
+  );
   const [categoryFilter, setCategoryFilter] = useState<string>(""); // '' = All
   const [searchTerm, setSearchTerm] = useState<string>(""); // for note search
 
@@ -31,6 +34,14 @@ const TransactionsPage: React.FC = () => {
     load(month);
   }, [load, month]);
 
+  // build category options based on typeFilter
+  const categoryOptions =
+    typeFilter === "expense"
+      ? EXPENSE_CATEGORIES
+      : typeFilter === "income"
+      ? INCOME_CATEGORIES
+      : [...EXPENSE_CATEGORIES, ...INCOME_CATEGORIES];
+
   // filter out any nulls just in case
   const safeTransactions = transactions.filter(
     (tx): tx is NonNullable<typeof tx> => tx != null
@@ -38,6 +49,7 @@ const TransactionsPage: React.FC = () => {
 
   // Client-side filtering by category AND searchTerm in note
   const filtered = safeTransactions
+    .filter((tx) => (typeFilter === "all" ? true : tx.type === typeFilter))
     .filter((tx) => categoryFilter === "" || tx.category === categoryFilter)
     .filter(
       (tx) =>
@@ -48,6 +60,10 @@ const TransactionsPage: React.FC = () => {
   // Handlers
   const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setMonth(e.target.value);
+  };
+  const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setTypeFilter(e.target.value as "all" | "income" | "expense");
+    setCategoryFilter(""); // reset category when type changes
   };
   const handleCategoryChange = (e: ChangeEvent<HTMLSelectElement>) =>
     setCategoryFilter(e.target.value);
@@ -85,6 +101,20 @@ const TransactionsPage: React.FC = () => {
           onChange={handleMonthChange}
           className="input"
         />
+        {/* Type filter */}
+        <label htmlFor="type-filter" style={{ marginLeft: 16 }}>
+          Type:
+        </label>{" "}
+        <select
+          id="type-filter"
+          value={typeFilter}
+          onChange={handleTypeChange}
+          className="select"
+        >
+          <option value="all">All</option>
+          <option value="expense">Expense</option>
+          <option value="income">Income</option>
+        </select>
         {/* Category filter */}
         <label htmlFor="category-filter" style={{ marginLeft: 16 }}>
           Category:
@@ -96,8 +126,8 @@ const TransactionsPage: React.FC = () => {
           className="select"
         >
           <option value="">All</option>
-          {CATEGORIES.map((cat) => (
-            <option key={cat} value={cat}>
+          {categoryOptions.map((cat, index) => (
+            <option key={index} value={cat}>
               {cat}
             </option>
           ))}
