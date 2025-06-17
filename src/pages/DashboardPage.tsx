@@ -75,32 +75,45 @@ const DashboardPage: React.FC = () => {
     ([category, amount]) => ({ category, amount })
   );
 
-  // Trend Data (last 6 months)
-  const getLastSixMonths = (): string[] => {
-    const months: string[] = [];
-    const today = new Date();
+  // 1) Helper that returns exactly the last 6 month codes *and* labels
+  const getLastSixMonths = (): { code: string; label: string }[] => {
+    const now = new Date();
+    const months: { code: string; label: string }[] = [];
+
     for (let i = 5; i >= 0; i--) {
-      const d = new Date(today.getFullYear(), today.getMonth() - i, 1);
-      months.push(d.toISOString().slice(0, 7));
+      // Make a date for the 1st of that month
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+
+      // Build “YYYY-MM” without toISOString
+      const year = d.getFullYear();
+      const monthNum = d.getMonth() + 1;
+      const code = `${year}-${String(monthNum).padStart(2, "0")}`;
+
+      // Build “Jun”, “Jul”, etc.
+      const label = d.toLocaleString("default", { month: "short" });
+
+      months.push({ code, label });
     }
+
     return months;
   };
 
-  const trendData: TrendData[] = getLastSixMonths().map((month) => {
+  // 2) Plug that into your trendData mapping
+  const trendData: TrendData[] = getLastSixMonths().map(({ code, label }) => {
+    // Filter exactly this month
     const monthTx = transactions.filter(
-      (tx) => tx.created_at.slice(0, 7) === month
+      (tx) => tx.occurred_at.slice(0, 7) === code
     );
+
     const spent = monthTx
       .filter((tx) => tx.type === "expense")
       .reduce((sum, tx) => sum + tx.amount, 0);
+
     const income = monthTx
       .filter((tx) => tx.type === "income")
       .reduce((sum, tx) => sum + tx.amount, 0);
-    // Format month label, e.g. 'Jun'
-    const monthLabel = new Date(`${month}-01`).toLocaleString("default", {
-      month: "short",
-    });
-    return { month: monthLabel, spent, income };
+
+    return { month: label, spent, income };
   });
 
   return (
