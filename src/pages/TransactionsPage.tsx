@@ -6,6 +6,7 @@ import AddTransactionForm from "../components/Transactions/AddTransactionForm";
 import type { Transaction } from "../types";
 import EditTransactionForm from "../components/Transactions/EditTransactionForm";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../constants/categories";
+import SpendingByCategory from "../components/Charts/SpendingByCategory";
 
 // Helpers to compute first/last day of current month
 const today = new Date();
@@ -163,6 +164,10 @@ const TransactionsPage: React.FC = () => {
           className="input"
         />
       </div>
+
+      {/* 📊 Spending by Category */}
+      <h2>Spending by Category</h2>
+      <SpendingByCategory transactions={filtered} />
 
       {/* Loading / error / empty state */}
       {loading && <div>Loading transactions…</div>}
