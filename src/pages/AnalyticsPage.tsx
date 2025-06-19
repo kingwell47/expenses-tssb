@@ -60,7 +60,7 @@ const AnalyticsPage: React.FC = () => {
   const filteredTx = useMemo(() => {
     if (!startDate || !endDate) return [];
     return safeTrendTx.filter((tx) => {
-      const date = tx.created_at.slice(0, 10);
+      const date = tx.occurred_at.slice(0, 10);
       return date >= startDate && date <= endDate;
     });
   }, [safeTrendTx, startDate, endDate]);
@@ -83,7 +83,7 @@ const AnalyticsPage: React.FC = () => {
   const trendData: TrendData[] = useMemo(() => {
     return getLastSixMonths().map((monthCode) => {
       const monthTx = safeTrendTx.filter(
-        (tx) => tx.created_at.slice(0, 7) === monthCode
+        (tx) => tx.occurred_at.slice(0, 7) === monthCode
       );
       const spent = monthTx
         .filter((tx) => tx.type === "expense")

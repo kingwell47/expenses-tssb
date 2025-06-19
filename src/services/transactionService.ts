@@ -86,3 +86,26 @@ export async function deleteTransaction(id: string): Promise<void> {
 
   if (error) throw new Error(error.message);
 }
+
+/**
+ * Fetch transactions within a date range (inclusive)
+ * Default usage: analytics page for last 6 months
+ */
+export async function fetchTransactionsInRange(
+  startDate: string, // 'YYYY-MM-DD'
+  endDate: string // 'YYYY-MM-DD'
+): Promise<Transaction[]> {
+  const start = `${startDate}T00:00:00Z`;
+  const end = `${endDate}T23:59:59Z`;
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .gte("created_at", start)
+    .lte("created_at", end)
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data ?? [];
+}

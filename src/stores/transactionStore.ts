@@ -7,6 +7,7 @@ import {
   addTransaction,
   updateTransaction,
   deleteTransaction,
+  fetchTransactionsInRange,
 } from "../services/transactionService";
 
 /**
@@ -22,6 +23,8 @@ interface TransactionSlice {
 
   /** Load all transactions for a given month (e.g. '2025-06') */
   load: (month: string) => Promise<void>;
+  /** Load transactions within a custom date range */
+  loadRange: (startDate: string, endDate: string) => Promise<void>;
   /** Add a new transaction */
   add: (tx: NewTransaction) => Promise<void>;
   /** Update an existing transaction */
@@ -50,6 +53,29 @@ export const useTransactionStore = create<TransactionSlice>()(
           });
         } catch (err: unknown) {
           let message = "Error loading transactions";
+          if (err instanceof Error) {
+            message = err.message;
+          }
+          set((state) => {
+            state.error = message;
+            state.loading = false;
+          });
+        }
+      },
+
+      loadRange: async (startDate, endDate) => {
+        set((state) => {
+          state.loading = true;
+          state.error = null;
+        });
+        try {
+          const data = await fetchTransactionsInRange(startDate, endDate);
+          set((state) => {
+            state.transactions = data;
+            state.loading = false;
+          });
+        } catch (err: unknown) {
+          let message = "Error loading transactions in range";
           if (err instanceof Error) {
             message = err.message;
           }
