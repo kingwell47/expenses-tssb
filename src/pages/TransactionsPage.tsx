@@ -7,16 +7,22 @@ import type { Transaction } from "../types";
 import EditTransactionForm from "../components/Transactions/EditTransactionForm";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../constants/categories";
 
+// Helpers to compute first/last day of current month
+const today = new Date();
+const YYYY = today.getFullYear();
+const MM = String(today.getMonth() + 1).padStart(2, "0");
+const firstOfMonth = `${YYYY}-${MM}-01`;
+const lastOfMonth = new Date(YYYY, today.getMonth() + 1, 0)
+  .toISOString()
+  .slice(0, 10);
+
 const TransactionsPage: React.FC = () => {
   // Zustand states
-  const { transactions, loading, error, load } = useTransactionStore();
+  const { transactions, loading, error, loadRange } = useTransactionStore();
 
   // Controls
-  // default to current year‐month (e.g. "2025-06")
-  const [month, setMonth] = useState<string>(() => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
-  });
+  const [startDate, setStartDate] = useState<string>(firstOfMonth);
+  const [endDate, setEndDate] = useState<string>(lastOfMonth);
   const [typeFilter, setTypeFilter] = useState<"all" | "income" | "expense">(
     "all"
   );
@@ -31,8 +37,10 @@ const TransactionsPage: React.FC = () => {
 
   // Load whenever month changes
   useEffect(() => {
-    load(month);
-  }, [load, month]);
+    if (startDate && endDate) {
+      loadRange(startDate, endDate);
+    }
+  }, [loadRange, startDate, endDate]);
 
   // build category options based on typeFilter
   const categoryOptions =
@@ -58,9 +66,10 @@ const TransactionsPage: React.FC = () => {
     );
 
   // Handlers
-  const handleMonthChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setMonth(e.target.value);
-  };
+  const onStartChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setStartDate(e.target.value);
+  const onEndChange = (e: ChangeEvent<HTMLInputElement>) =>
+    setEndDate(e.target.value);
   const handleTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
     setTypeFilter(e.target.value as "all" | "income" | "expense");
     setCategoryFilter(""); // reset category when type changes
@@ -75,7 +84,7 @@ const TransactionsPage: React.FC = () => {
   const handleAddCancel = () => setShowAdd(false);
   const handleAddSuccess = async () => {
     setShowAdd(false);
-    await load(month);
+    await loadRange(startDate, endDate);
   };
 
   // Show Editing form
@@ -85,20 +94,29 @@ const TransactionsPage: React.FC = () => {
   const handleEditCancel = () => setEditingTx(null);
   const handleEditSaved = async () => {
     setEditingTx(null);
-    await load(month);
+    await loadRange(startDate, endDate);
   };
 
   return (
     <div>
-      <h1>Transactions for {month}</h1>
+      <h1>
+        Transactions from {startDate} to {endDate}
+      </h1>
 
       <div>
-        <label htmlFor="month">Month: </label>
+        {/* Date-range filters */}
+        <label>From: </label>
         <input
-          id="month"
-          type="month"
-          value={month}
-          onChange={handleMonthChange}
+          type="date"
+          value={startDate}
+          onChange={onStartChange}
+          className="input"
+        />
+        <label style={{ marginLeft: 16 }}>To: </label>
+        <input
+          type="date"
+          value={endDate}
+          onChange={onEndChange}
           className="input"
         />
         {/* Type filter */}

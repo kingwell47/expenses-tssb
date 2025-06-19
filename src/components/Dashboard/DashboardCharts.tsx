@@ -9,6 +9,8 @@ import {
   CartesianGrid,
   ComposedChart,
   Legend,
+  LineChart,
+  Line,
 } from "recharts";
 import type { CategoryData, TrendData } from "../../types";
 
@@ -36,6 +38,23 @@ const DashboardCharts: React.FC<DashboardChartsProps> = ({
             <Tooltip />
             <Bar dataKey="amount" name="Amount (₱)" />
           </BarChart>
+        </ResponsiveContainer>
+      </div>
+
+      {/* Spending Trend Line Chart */}
+      <div className="chart-container" style={{ width: "100%", height: 300 }}>
+        <h3 className="text-lg font-medium mb-2">
+          Spending Trend (Last 6 Months)
+        </h3>
+        <ResponsiveContainer>
+          <LineChart data={trendData}>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="month" />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Line type="monotone" dataKey="spent" name="Spent (₱)" />
+          </LineChart>
         </ResponsiveContainer>
       </div>
 

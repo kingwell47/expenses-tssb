@@ -13,7 +13,6 @@ import NavBar from "./components/Layout/NavBar";
 
 import { useSupabaseSession } from "./hooks/useSupabaseSession";
 import TransactionsPage from "./pages/TransactionsPage";
-import AnalyticsPage from "./pages/AnalyticsPage";
 
 /**
  * PrivateRoute: redirects to /login if there's no authenticated user.
@@ -98,14 +97,6 @@ function App() {
           element={
             <PrivateRoute>
               <TransactionsPage />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/analytics"
-          element={
-            <PrivateRoute>
-              <AnalyticsPage />
             </PrivateRoute>
           }
         />

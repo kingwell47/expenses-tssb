@@ -100,9 +100,9 @@ export async function fetchTransactionsInRange(
   const { data, error } = await supabase
     .from("transactions")
     .select("*")
-    .gte("created_at", start)
-    .lte("created_at", end)
-    .order("created_at", { ascending: true });
+    .gte("occurred_at", start)
+    .lte("occurred_at", end)
+    .order("occurred_at", { ascending: true });
 
   if (error) {
     throw new Error(error.message);
