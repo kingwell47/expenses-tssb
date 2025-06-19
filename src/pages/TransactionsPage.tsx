@@ -7,6 +7,7 @@ import type { Transaction } from "../types";
 import EditTransactionForm from "../components/Transactions/EditTransactionForm";
 import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "../constants/categories";
 import SpendingByCategory from "../components/Charts/SpendingByCategory";
+import KPICards from "../components/Charts/KPICards";
 
 // Helpers to compute first/last day of current month
 const today = new Date();
@@ -164,6 +165,8 @@ const TransactionsPage: React.FC = () => {
           className="input"
         />
       </div>
+      {/* KPI Cards */}
+      <KPICards transactions={filtered} />
 
       {/* 📊 Spending by Category */}
       <h2>Spending by Category</h2>
